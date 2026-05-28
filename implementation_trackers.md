@@ -7,3 +7,6 @@ Source: https://github.com/lauziere/Murty
 Language Used: Python 3
 
 
+##FastMurty
+Source: https://github.com/motrom/fastmurty
+Language Used: C & Python for testing.
