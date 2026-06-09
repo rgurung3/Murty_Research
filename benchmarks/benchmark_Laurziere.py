@@ -22,8 +22,8 @@ from generator import generate_test_matrix
 from getkBestNoRankHung import getkBestNoRankHung
 
 def run_benchmark():
-    sizes = [10, 20, 30]
-    k_values = [100, 500]
+    sizes = [50, 75, 100]
+    k_values = [1000, 5000]
     matrix_types = ['dense', 'skewed', 'sparse']
     num_runs = 5
 

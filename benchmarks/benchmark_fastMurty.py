@@ -25,8 +25,8 @@ from mhtdaClink import mhtda, allocateWorkvarsforDA, sparsifyByRow
 
 
 def run_benchmark():
-    sizes = [10, 20, 30]
-    k_values = [100, 500]
+    sizes = [50, 75, 100]
+    k_values = [1000, 5000]
     matrix_types = ['dense', 'skewed', 'sparse']
     nums_runs = 5
 
@@ -65,33 +65,33 @@ def run_benchmark():
                     
                     try:
                         workvars = allocateWorkvarsforDA(nrows, ncolumns, k)
-                        start_time = time.time()
+                        start_time = time.perf_counter()
                         mhtda(
                             cost_matrix_to_use, row_priors, row_prior_weights, col_priors, col_prior_weights,
                             out_associations, out_costs, workvars
                         )
-                        end_time = time.time()
-                        execution_times.append(start_time - end_time)
+                        end_time = time.perf_counter()
+                        execution_times.append(end_time - start_time)
                     except Exception as e:
                         print("Crashed here.")
                         traceback.print_exc()
                         failed = True
                         break
 
-                    if failed or not execution_times:
-                        avg_time = "Crashed"
-                        status = "Failed"
-                    else:
-                        avg_time = f"{np.mean(execution_times): .4f}"
-                        status = "Success"
-                    print(f"{mat_Type: <15} | {size:<6} | {k:<5} | {avg_time:<12} | {status:<8}")
-                    results.append({
-                        'Matrix Type': mat_Type,
-                        'Size': size,
-                        'K': k,
-                        'Avg Time': avg_time,
+                if failed or not execution_times:
+                   avg_time = "Crashed"
+                   status = "Failed"
+                else:
+                   avg_time = f"{np.mean(execution_times): .4f}"
+                   status = "Success"
+                   print(f"{mat_Type: <15} | {size:<6} | {k:<5} | {avg_time:<12} | {status:<8}")
+                   results.append({
+                       'Matrix Type': mat_Type,
+                       'Size': size,
+                       'K': k,
+                       'Avg Time': avg_time,
                         'Status': status
-                    })
+                  })
     df = pd.DataFrame(results)
     os.makedirs(RESULTS_DIR, exist_ok=True)
     output_path = os.path.join(RESULTS_DIR, 'fast_murty_benchmark_results.csv')
