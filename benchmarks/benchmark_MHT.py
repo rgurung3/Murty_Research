@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import traceback
 import math
+from mht import hypgen
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
@@ -45,17 +46,16 @@ def run_benchmark():
                     matrix = generate_test_matrix(matrix_type=mat_type, size=size, seed=seed)
 
                     # Handle values for sparse matrices consistently
-                    if mat_type == 'sparse':
-                        matrix[matrix == float('inf')] = 1e6
-                    
-                    cost_matrix = np.asarray(matrix.astype(np.float64))
+                    matrix[matrix == float('inf')] = 100000
+                    matrix[matrix == np.inf] = 100000
+                    cost_matrix = np.matrix(matrix, dtype=np.int32)
 
                     try:
                         start_time = time.perf_counter()
                         
                         solutions = []
                         
-                        for res in murty(cost_matrix):
+                        for res in hypgen.murty(cost_matrix):
                             solutions.append(res)
                             if len(solutions) >= k:
                                 break
